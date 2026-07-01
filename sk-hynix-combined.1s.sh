@@ -6,7 +6,7 @@
 # <bitbar.desc>SK하이닉스 + KODEX SK하이닉스레버리지 통합 모니터</bitbar.desc>
 
 UA="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-URL="https://wts-info-api.tossinvest.com/api/v3/stock-prices?meta=true&productCodes=A000660,A0193T0"
+URL="https://wts-info-api.tossinvest.com/api/v3/stock-prices?meta=true&productCodes=A000660,A0193T0,A0195S0"
 CACHE_FILE="/tmp/sk_hynix_cache.json"
 
 # 거래 가능 시간 확인: 평일 08:00~20:00 (KST)
@@ -137,6 +137,7 @@ try:
     items = {p['productCode']: p for p in result}
     skh = items['A000660']
     lev = items['A0193T0']
+    tig = items['A0195S0']
 except Exception:
     print("⚠️ Parse Error")
     exit()
@@ -151,6 +152,7 @@ def parse_stock(p):
 
 skh_base, skh_close, skh_vol, skh_change, skh_pct, skh_end, skh_next = parse_stock(skh)
 lev_base, lev_close, lev_vol, lev_change, lev_pct, lev_end, lev_next = parse_stock(lev)
+tig_base, tig_close, tig_vol, tig_change, tig_pct, tig_end, tig_next = parse_stock(tig)
 
 def color(change):
     return "#FF453A" if change > 0 else "#0A84FF" if change < 0 else "#8E8E93"
@@ -165,6 +167,8 @@ menubar = (
     f"{skh_close:,.0f}원 {sign(skh_change)}{abs(skh_change):,.0f}원 ({sign(skh_change)}{abs(skh_pct):.1f}%)"
     f"  ·  "
     f"{lev_close:,.0f}원 {sign(lev_change)}{abs(lev_change):,.0f}원 ({sign(lev_change)}{abs(lev_pct):.1f}%)"
+    f"  ·  "
+    f"{tig_close:,.0f}원 {sign(tig_change)}{abs(tig_change):,.0f}원 ({sign(tig_change)}{abs(tig_pct):.1f}%)"
 )
 print(f"{menubar} | font=Menlo size=12 color={bar_color}")
 print("---")
@@ -204,5 +208,23 @@ print(f"  🕐 Last:  {fmt_last_etf(lev_end)}")
 print(f"  🕐 Next:  {fmt_next_etf(lev_next)}")
 print("---")
 print("↗ Toss (KODEX) | href=https://www.tossinvest.com/stocks/A0193T0/order")
+
+# ── TIGER SK하이닉스레버리지 ─────────────────────────
+c = color(tig_change)
+s = sign(tig_change)
+print("---")
+print(f"✦ TIGER SK하이닉스단일종목레버리지 · {session_label_etf()}")
+print("---")
+print(f"  Price    {tig_close:>12,.0f}원  |  font=Menlo size=12 color={c}")
+print(f"  Change   {s}{abs(tig_change):>11,.0f}원  |  font=Menlo size=12 color={c}")
+print(f"  Change % {s}{abs(tig_pct):>10.1f}%  |  font=Menlo size=12 color={c}")
+print("---")
+print(f"  Base     {tig_base:>12,.0f}원  |  font=Menlo size=12")
+print(f"  Volume   {tig_vol:>12,}   |  font=Menlo size=12")
+print("---")
+print(f"  🕐 Last:  {fmt_last_etf(tig_end)}")
+print(f"  🕐 Next:  {fmt_next_etf(tig_next)}")
+print("---")
+print("↗ Toss (TIGER) | href=https://www.tossinvest.com/stocks/A0195S0/order")
 print("🔄 Refresh | refresh=true")
 EOF
